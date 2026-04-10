@@ -1,0 +1,7 @@
+// Special Privileges Assigned to Non-Admin Account - T1078
+
+SecurityEvent
+| where TimeGenerated > ago(1h)
+| where EventID == 4672
+| where SubjectUserName !endswith "$"
+| where SubjectUserName != "SYSTEM"
