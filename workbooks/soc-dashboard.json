@@ -1,0 +1,176 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "d3b9b61e-e7f8-4a11-b93d-e229a78ca239",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time Range",
+            "type": 4,
+            "isRequired": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": {
+              "durationMs": 604800000
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityAlert\r\n| where TimeGenerated {TimeRange}\r\n| summarize AlertCount = count() by bin(TimeGenerated, 1h), AlertSeverity\r\n| render timechart",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "linechart"
+      },
+      "name": "Alert Volume Over Time"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityAlert\r\n| where TimeGenerated {TimeRange}\r\n| summarize Count = count() by AlertSeverity\r\n| render barchart",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart"
+      },
+      "name": "Alert Severity Distribution"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityAlert\r\n| where TimeGenerated {TimeRange}\r\n| summarize Count = count() by AlertName\r\n| render piechart",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "name": "Alerts by Rule"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\r\n| where TimeGenerated {TimeRange}\r\n| where EventID == 4625\r\n| where IpAddress != \"-\"\r\n| where isnotempty(IpAddress)\r\n| extend Country = \"Unknown\"\r\n| summarize FailedLogins = count() by IpAddress, Country",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "map",
+        "mapSettings": {
+          "locInfo": "CountryRegion",
+          "locInfoColumn": "Country",
+          "latitude": "IpAddress",
+          "longitude": "IpAddress",
+          "sizeSettings": "FailedLogins",
+          "sizeAggregation": "Sum",
+          "legendMetric": "FailedLogins",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "nodeColorField": "FailedLogins",
+            "colorAggregation": "Sum",
+            "type": "heatmap",
+            "heatmapPalette": "greenRed"
+          }
+        }
+      },
+      "name": "Failed Login Source Locations"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityIncident\r\n| where TimeGenerated {TimeRange}\r\n| where Status != \"Closed\"\r\n| project TimeGenerated, Title, Severity, Status, Owner\r\n| order by TimeGenerated desc",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      },
+      "name": "Open Incidents"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/5bcdb2a3-4bcf-4bb9-992c-b584caeb630e/resourcegroups/sentinellab-rg/providers/microsoft.operationalinsights/workspaces/sentinellab-law"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
