@@ -1,0 +1,7 @@
+// Encoded PowerShell Execution - T1059.001, T1027.010
+
+Event
+| where TimeGenerated > ago(1h)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 1
+| where EventData contains "-EncodedCommand" or EventData contains "-enc"
