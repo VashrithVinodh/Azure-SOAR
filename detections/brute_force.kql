@@ -1,0 +1,8 @@
+// Brute Force Detection - T1110
+
+SecurityEvent
+| where TimeGenerated > ago(5m)
+| where EventID == 4625
+| summarize Failed = count() by TargetUserName
+| where Failed > 5
+| sort by Failed desc
