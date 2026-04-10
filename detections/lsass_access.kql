@@ -1,0 +1,7 @@
+// LSASS Memory Access - T1003.001
+
+Event
+| where TimeGenerated > ago(1h)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 10
+| where EventData contains "lsass.exe"
