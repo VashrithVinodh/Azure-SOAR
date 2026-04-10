@@ -1,0 +1,7 @@
+// Registry Run Key Persistence - T1547.001
+
+Event
+| where TimeGenerated > ago(1h)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 13
+| where EventData contains "\\CurrentVersion\\Run"
