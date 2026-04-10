@@ -1,0 +1,7 @@
+// Scheduled Task Creation via Command Line - T1053.005
+
+Event
+| where TimeGenerated > ago(1h)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventData contains "schtasks.exe"
+| where EventData contains "/create"
