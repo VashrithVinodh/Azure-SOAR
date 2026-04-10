@@ -1,0 +1,16 @@
+// Successful Logon After Brute Force - T1110
+
+let BruteForced = SecurityEvent
+| where TimeGenerated > ago(1h)
+| where EventID == 4625
+| where TargetUserName != "SYSTEM"
+| where TargetUserName != "-"
+| summarize FailedCount = count() by TargetUserName
+| where FailedCount >= 3;
+SecurityEvent
+| where TimeGenerated > ago(1h)
+| where EventID == 4624
+| where TargetUserName != "SYSTEM"
+| where TargetUserName != "-"
+| join BruteForced on TargetUserName
+| project TimeGenerated, TargetUserName
