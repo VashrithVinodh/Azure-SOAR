@@ -1,0 +1,10 @@
+// Suspicious Outbound Network Connection - T1041
+
+Event
+| where TimeGenerated > ago(1h)
+| where Source == "Microsoft-Windows-Sysmon"
+| where EventID == 3
+| where EventData !contains "<DestinationPort>53</DestinationPort>"
+| where EventData !contains "<DestinationPort>80</DestinationPort>"
+| where EventData !contains "<DestinationPort>443</DestinationPort>"
+| where EventData !contains "<DestinationPort>8080</DestinationPort>"
