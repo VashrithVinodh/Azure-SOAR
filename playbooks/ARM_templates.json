@@ -1,0 +1,85 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/170e81ec-fa47-4e30-a5c0-11a377a9d0c5')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/170e81ec-fa47-4e30-a5c0-11a377a9d0c5')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/AutomationRules",
+            "apiVersion": "2024-04-01-preview",
+            "properties": {
+                "displayName": "AutoClose-Informational-Rule",
+                "order": 1,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentSeverity",
+                                "operator": "Equals",
+                                "propertyValues": [
+                                    "Informational"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "/subscriptions/5bcdb2a3-4bcf-4bb9-992c-b584caeb630e/resourceGroups/SentinelLab-RG/providers/Microsoft.Logic/workflows/AutoClose-Informational",
+                            "tenantId": "8de3155b-295a-4c2c-b426-ff7ae3256b6c"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/be8fccf7-70bf-4fab-9971-fe14609a453c')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/be8fccf7-70bf-4fab-9971-fe14609a453c')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/AutomationRules",
+            "apiVersion": "2024-04-01-preview",
+            "properties": {
+                "displayName": "Email-HighSeverity-Rule",
+                "order": 2,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentSeverity",
+                                "operator": "Equals",
+                                "propertyValues": [
+                                    "High"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "/subscriptions/5bcdb2a3-4bcf-4bb9-992c-b584caeb630e/resourceGroups/SentinelLab-RG/providers/Microsoft.Logic/workflows/Email-HighSeverity",
+                            "tenantId": "8de3155b-295a-4c2c-b426-ff7ae3256b6c"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
