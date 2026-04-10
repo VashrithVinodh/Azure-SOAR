@@ -1,0 +1,9 @@
+// New Local Admin Account Created  - T1136
+
+let Created = SecurityEvent
+| where TimeGenerated > ago(1h)
+| where EventID == 4720; // user creation
+SecurityEvent
+| where TimeGenerated > ago(1h)
+| where EventID == 4732 // added to administrator group
+| join Created on SubjectUserName
